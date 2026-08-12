@@ -31,6 +31,8 @@ sources:
 
 `SceneTree::setRoot` owns enter/ready order for `EngineNode` roots (bypasses UX mount when the root is an engine node).[^scene-tree]
 
+`InteractsWithSceneTree::addChild` / `removeChild` / `clearChildren` mirror Godot: children added under an in-tree parent are entered automatically; removed children exit first. Apps should not call `enterTreeInternal` / `exitTreeInternal` on phase swaps.
+
 # Frame loop
 
 Godot-shaped clocks in `Game`:[^game]

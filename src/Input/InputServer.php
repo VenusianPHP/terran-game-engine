@@ -77,6 +77,12 @@ class InputServer
             return;
         }
 
+        if (! is_null($game) && ! $this->canvasHasInputFocus($game)) {
+            $this->clearInputState($tree);
+
+            return;
+        }
+
         $this->engineInput->poll();
 
         $keyboard = $this->engineInput->keyboard();
@@ -111,6 +117,51 @@ class InputServer
                         $tree->dispatchInput(new InputEventAction($action, $down));
                     }
                 }
+            }
+        }
+    }
+
+    protected function canvasHasInputFocus(Game $game): bool
+    {
+        $canvas = $game->canvas();
+
+        if ($canvas instanceof \ScrapyardIO\Tubes\Canvas\OSWindow) {
+            return $canvas->hasInputFocus();
+        }
+
+        return true;
+    }
+
+    /**
+     * Release held keys/actions when the window blurs so edges don't stick.
+     */
+    protected function clearInputState(SceneTree $tree): void
+    {
+        foreach ($this->keyState as $key => $wasDown) {
+            if (! $wasDown) {
+                continue;
+            }
+
+            $this->keyState[$key] = false;
+            $tree->dispatchInput(new InputEventKey($key, false));
+
+            foreach ($this->map->actionsForKey($key) as $action) {
+                $this->actionPressed[$action] = false;
+                $tree->dispatchInput(new InputEventAction($action, false));
+            }
+        }
+
+        foreach ($this->mouseState as $code => $wasDown) {
+            if (! $wasDown) {
+                continue;
+            }
+
+            $this->mouseState[$code] = false;
+            $tree->dispatchInput(new InputEventMouseButton($code, false, 0, 0));
+
+            foreach ($this->map->actionsForMouseButton($code) as $action) {
+                $this->actionPressed[$action] = false;
+                $tree->dispatchInput(new InputEventAction($action, false));
             }
         }
     }

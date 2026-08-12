@@ -2,6 +2,7 @@
 
 namespace ScrapyardIO\GameEngine\Nodes\Concerns;
 
+use ScrapyardIO\GameEngine\Contracts\EngineNode;
 use ScrapyardIO\GameEngine\Input\Events\InputEvent;
 use ScrapyardIO\GameEngine\SceneTree;
 use ScrapyardIO\UX\Core\Node as UxNode;
@@ -18,6 +19,48 @@ trait InteractsWithSceneTree
     protected bool $insideTree = false;
 
     protected bool $engineReadyCalled = false;
+
+    /**
+     * Godot-style: adding a child to a node already in the tree enters that child.
+     * Suppresses UX mount/ready so enterTreeInternal owns ready order.
+     */
+    public function addChild(UxNode $child): static
+    {
+        if ($this->insideTree && ! is_null($this->sceneTree) && $child instanceof EngineNode) {
+            $wasMounted = $this->mounted;
+            $this->mounted = false;
+            parent::addChild($child);
+            $this->mounted = $wasMounted;
+            $child->enterTreeInternal($this->sceneTree);
+
+            return $this;
+        }
+
+        return parent::addChild($child);
+    }
+
+    /**
+     * Godot-style: removing a child that is in the tree exits it first.
+     */
+    public function removeChild(UxNode $child): static
+    {
+        if ($child instanceof EngineNode && $child->isInsideTree()) {
+            $child->exitTreeInternal();
+        }
+
+        return parent::removeChild($child);
+    }
+
+    public function clearChildren(): static
+    {
+        foreach ($this->children() as $child) {
+            if ($child instanceof EngineNode && $child->isInsideTree()) {
+                $child->exitTreeInternal();
+            }
+        }
+
+        return parent::clearChildren();
+    }
 
     public function isInsideTree(): bool
     {
