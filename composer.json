@@ -1,0 +1,72 @@
+{
+    "name": "scrapyard-io/game-engine",
+    "description": "Godot-inspired 2D scene tree game engine for ScrapyardIO (UX + tubes).",
+    "type": "library",
+    "version": "0.7.0",
+    "keywords": ["framework", "scrapyard-io", "game-engine", "godot"],
+    "license": "MIT",
+    "homepage": "https://scrapyard-io.projectsaturnstudios.com/ecosystem/scrapyard-io/game-engine/0.7.x",
+    "support": {
+        "issues": "https://github.com/ScrapyardIO/game-engine/issues",
+        "source": "https://github.com/ScrapyardIO/game-engine"
+    },
+    "authors": [
+        {
+            "name": "Angel Gonzalez",
+            "email": "angel@projectsaturnstudios.com"
+        }
+    ],
+    "require": {
+        "php": "^8.4|^8.5|^8.6",
+        "ext-pdo": "*",
+        "fabricate/contracts": "^0.7.0",
+        "fabricate/nuts-and-bolts": "^0.7.0",
+        "fabricate/sketches": "^0.7.0",
+        "scrapyard-io/ux": "^0.7.2",
+        "tubes/canvas": "^0.7.0",
+        "tubes/contracts": "^0.7.0",
+        "tubes/human-input": "^0.7.0",
+        "tubes/inputs": "^0.7.0",
+        "tubes/rendering": "^0.7.0",
+        "tubes/windows": "^0.7.0"
+    },
+    "require-dev": {
+        "pestphp/pest": "^4"
+    },
+    "suggest": {
+        "ext-pdo_sqlite": "Required for the default SQLite ResourceStore path used in tests and demos."
+    },
+    "autoload": {
+        "psr-4": {
+            "ScrapyardIO\\GameEngine\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ScrapyardIO\\GameEngine\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "scrapyard-io": {
+            "providers": [
+                "ScrapyardIO\\GameEngine\\GameEngineServiceProvider"
+            ]
+        },
+        "branch-alias": {
+            "dev-master": "0.7.x-dev",
+            "dev-main": "0.7.x-dev",
+            "dev-0.7.x": "0.7.x-dev"
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "scripts": {
+        "test": "@php vendor/bin/pest"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
