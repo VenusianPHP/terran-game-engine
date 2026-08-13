@@ -40,7 +40,7 @@ Godot-shaped clocks in `Game`:[^game]
 ```text
 InputServer.pump(SceneTree)
   → fixed PhysicsServer steps (physics_tps accumulator)
-  → process / FiberProcessScheduler
+  → process / FiberProcessScheduler (sync processInternal; no per-frame Fiber until something suspends)
   → SceneTree.drawFrame (Renderer2D + Scene::paint)
   → Canvas.present (+ OSWindow.pollEvents)
 ```

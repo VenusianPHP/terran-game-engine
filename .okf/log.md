@@ -1,5 +1,9 @@
 # Directory Update Log
 
+## 2026-08-12
+
+* **FiberProcessScheduler**: do not `new Fiber` every frame. Tetriminos Metal soak (debug-641660) retained 168 B/frame on the sim slice; Fibers never `suspend()`. `process()` calls `processInternal` directly until a real yield exists.
+
 ## 2026-08-11
 
 * **Initialization**: Created OKF v0.2 bundle for `scrapyard-io/game-engine` 0.7 — orientation (package, ownership vs UX/tubes, Godot backend mapping), core (SceneTree/Game, signals, PhysicsServer, InputMap, Node2D + Control living catalogs scanned from `src/Nodes/Node2D` and `src/Nodes/Control`, resources, canvas targets), conventions (dependency direction, PHP enums, gfx-agnostic input). All new concepts `status: draft` pending human verification.
