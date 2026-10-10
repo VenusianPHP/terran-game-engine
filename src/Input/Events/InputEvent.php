@@ -1,18 +1,8 @@
 <?php
+declare(strict_types=1);
+namespace Terran\Input\Events;
 
-namespace ScrapyardIO\GameEngine\Input\Events;
+use Voyager\Contracts\Signals\NamedSignal;
 
-class InputEvent
-{
-    protected bool $handled = false;
-
-    public function consume(): void
-    {
-        $this->handled = true;
-    }
-
-    public function isHandled(): bool
-    {
-        return $this->handled;
-    }
-}
+/** One thing that happened to input this frame. Scenes get it through input(); the application hears it on app('signals') as terran.input.<kind>. */
+abstract readonly class InputEvent implements NamedSignal {}

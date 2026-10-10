@@ -1,14 +1,13 @@
-# Directory Update Log
+# Log
 
-## 2026-08-12
+## 2026-10-09
 
-* **FiberProcessScheduler**: do not `new Fiber` every frame. Tetriminos Metal soak (debug-641660) retained 168 B/frame on the sim slice; Fibers never `suspend()`. `process()` calls `processInternal` directly until a real yield exists.
+* Slice 2b: `Seats` over each frame's pad listing (hardware id key, reservations, namesake rule, takeover, lobby `assign()`/`release()`, player lights), per-seat `InputMap`/`PhysicsLatch` views, seat on pad and action events, `actions(?int $seat)`, config `seats` / `keyboard_seat` / `seat_on_connect`. [input](architecture/input.md).
+* `terran.stager` (`TERRAN_STAGER`): the stager every staged target opens through unless its `options.toolkit` names one; null leaves Surface's default. [engine](architecture/engine.md).
+* Slice 2a: fixed-step accumulator with `max_physics_steps`, hook passes and the `until()` guard, `World::async()`, Interrupts, Autoloads, Viewport re-mint on resize and `toPixels()`. [engine](architecture/engine.md).
+* Slice 2a input: `InputReader`, events, `InputMap`, `PhysicsLatch`, `Scene::input()` / `actions()`. [input](architecture/input.md).
 
-## 2026-08-11
+## 2026-10-08
 
-* **Initialization**: Created OKF v0.2 bundle for `scrapyard-io/game-engine` 0.7 — orientation (package, ownership vs UX/tubes, Godot backend mapping), core (SceneTree/Game, signals, PhysicsServer, InputMap, Node2D + Control living catalogs scanned from `src/Nodes/Node2D` and `src/Nodes/Control`, resources, canvas targets), conventions (dependency direction, PHP enums, gfx-agnostic input). All new concepts `status: draft` pending human verification.
-* **Catalogs**: Node2D checklist covers Godot 4.5 non-editor Node2D descendants (all present under `src/`); Control checklist covers Godot 4.5 non-editor Control descendants (including `ColorPicker`, `ColorPickerButton`, `GraphFrame`). Scrapyard-only extensions noted separately (`PhysicsBounds2D` / `PhysicsObject2D`, `PopupMenu` / `VirtualJoystick`).
-
-* **Close-out**: Added `ColorPicker`, `ColorPickerButton`, `GraphFrame`; wired `PhysicsBounds2D` → `Area2D::monitorOverlaps` after fixed step; Pest for StaticBody2D/Area2D signals + BoxContainer layout; Control catalog gaps cleared.
-* **CI / deps**: Dropped `scrapyard-io/framework` + `scrapyard-io/tubes` metapackage requires in favor of `fabricate/{contracts,nuts-and-bolts,sketches}` + `tubes/{canvas,contracts,human-input,inputs,rendering,windows}` + `scrapyard-io/ux`. Demo uses `WindowManager` (no tubes MagicAlias). Added GitHub Actions Pest matrix (PHP 8.4/8.5, `pdo_sqlite`).
-
+* Slice 1: package scaffold; `GameEngine` (sketch `game`), `GameLoop` over `'event-loop'`, `World`, `Viewport`, `Scene` with five hooks, `TargetOpener` with `staged` / `canvas` / `display`, `config/terran.php`. [engine](architecture/engine.md).
+* Staged windows join their toolkit session to the loop; `OwnedTarget::alive()` stops the engine on a closed window. [engine](architecture/engine.md).
