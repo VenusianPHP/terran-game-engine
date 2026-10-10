@@ -24,6 +24,10 @@ Do **not** create `.okf` folders under `src/*`.
 - **Physics:** `GameLoop::advance()` runs whole steps, at most `max_physics_steps`, dropping a longer stall. Hooks run inside `GameLoop::hooks()`; a wait there outside a loop fiber throws.
 - **Interrupts and Autoloads** are attributes read up the class chain and cached per class.
 - `is_null($x)` over `$x === null`; strict types everywhere; Pest v4.
+- **Sheets are cut once.** `SpriteSheet` and `TileSet` hold one framebuffer per cell, cut at load; nothing draws a sub-rectangle (the engine's `image()` has none).
+- **Primitives work inside their hooks** (`Button::input()`, `AnimatedSprite2D::process()`); subclasses and generated stubs call the parent's hook.
+- **UIControls get input by hit test or focus only**; `World::deliver()` skips them in the depth-first walk.
+- **Primitives register through `terran.primitives`**; a slug gives `make:scene:<slug>` when the console starts.
 
 ## Verification
 

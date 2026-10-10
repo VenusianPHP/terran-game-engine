@@ -27,4 +27,4 @@ Provider: `terran.actions` (`InputMap` from `terran.input.actions`), `terran.inp
 
 Config `terran.php`: `main_scene`, `refresh_rate` (null → `sketches.refresh_rate`), `physics_hz` (60), `max_physics_steps` (8), `stager` (null; `'appkit'`, `'sdl3'` or `'glfw'`), `autoloads` ([]), `targets` (default `main`: staged 960×540 "Terran" on velvet), `input.actions` ([]), `input.events` (`['keyboard', 'mouse']`).
 
-Not yet: Scene2D/3D/UIControl and UIControls-first input walk (3), cameras, Renderer3D (slices 3–6).
+Not yet: `Renderer3D` and drawing 3D Scenes (6). Scenes: [scenes](scenes.md).

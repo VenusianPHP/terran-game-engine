@@ -1,5 +1,9 @@
 # Log
 
+## 2026-10-10
+
+* Slice 3: math, assets, 2D/UI/3D primitives, Viewport passes and cameras, UI-first input walk, `ScenePrimitives` and `make:scene:<slug>`. [scenes](architecture/scenes.md)
+
 ## 2026-10-09
 
 * Slice 2b: `Seats` over each frame's pad listing (hardware id key, reservations, namesake rule, takeover, lobby `assign()`/`release()`, player lights), per-seat `InputMap`/`PhysicsLatch` views, seat on pad and action events, `actions(?int $seat)`, config `seats` / `keyboard_seat` / `seat_on_connect`. [input](architecture/input.md).

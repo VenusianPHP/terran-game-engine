@@ -85,6 +85,21 @@ abstract class Scene
 
     public function parent(): ?Scene { return $this->parent; }
 
+    /** True when this Scene hides itself and everything under it. A plain Scene never does; 2D, UI and 3D Scenes do through visible. */
+    public function hidden(): bool { return false; }
+
+    /** False when this Scene or any ancestor, of any kind, is hidden. */
+    public function visibleInTree(): bool
+    {
+        for ($scene = $this; ! is_null($scene); $scene = $scene->parent) {
+            if ($scene->hidden()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     /** @return list<Scene> */
     public function children(): array { return array_values($this->children); }
 

@@ -96,6 +96,40 @@ Pads take the lowest free seat as they connect and are lit as that player. A pad
 
 A Viewport whose target changes size re-mints its engine before drawing; a zero size skips the frame.
 
+## Scenes
+
+Primitives, as Godot's node types: extend them.
+
+```php
+$sheet = SpriteSheet::grid(Texture::load(base_path('assets/ship.png')), 4, 1);
+$ship = new Sprite2D('ship', $sheet);
+$ship->add((new Camera2D('camera'))->makeCurrent());     // the camera follows its parent
+
+$hud = (new Panel('hud'))->setMargin(16, 16, 236, 150);
+$stack = (new VBox('stack'))->setAnchor(Anchor::FULL_RECT)->setMargin(8, 8, -8, -8);
+$button = new Button('start', 'START');
+$button->connect('pressed', fn () => $this->begin());
+$hud->add($stack->add($button));
+```
+
+| 2D | UI | 3D |
+|---|---|---|
+| `Scene2D`, `Sprite2D`, `AnimatedSprite2D`, `TileMap`, `Camera2D`, `Label2D`, `Shape2D` | `UIControl`, `Panel`, `Label`, `Button`, `ProgressBar`, `VBox`, `HBox` | `Scene3D`, `Camera3D`, `MeshInstance`, `DirectionalLight` |
+
+The Viewport draws 2D Scenes by z through the current `Camera2D`, then UI in viewport pixels on top. 3D Scenes transform now and draw from slice 6. Mouse events reach UI controls under the pointer first; keys reach the focused control first; define `ui_next`, `ui_prev`, `ui_accept` actions for pad and keyboard menus. A subclass that overrides a hook calls the parent's.
+
+```bash
+php rocket make:scene Level                 # a plain Scene
+php rocket make:scene:sprite2d Ship         # app/Scenes/Ship.php extends Sprite2D
+php rocket make:scene:button StartButton
+```
+
+A package adds its own primitive, and gets its `make:scene:<slug>`, from its provider's `register()`:
+
+```php
+$this->callAfterResolving('terran.primitives', fn (ScenePrimitives $p) => $p->register('tetromino', Tetromino::class));
+```
+
 ## Own your window
 
 Extend `GameEngine`, open the window in `openTargets()`, return its canvas as a `canvas` target, and return your root from `mainScene()`.

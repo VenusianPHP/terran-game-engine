@@ -3,12 +3,17 @@ declare(strict_types=1);
 namespace Terran;
 
 use Surface\Drawing\DrawingManager;
+use Terran\Assets\AssetCache;
 use Terran\Autoload\AutoloadRegistry;
+use Terran\Console\ScenePrimitiveMakeCommand;
 use Terran\Input\InputMap;
 use Terran\Input\InputReader;
 use Terran\Input\Seats;
+use Terran\Scenes\ScenePrimitives;
 use Terran\Targets\TargetOpener;
+use Voyager\Console\ComputerConsoleInstance as Computer;
 use Voyager\Contracts\Core\FrameworkCore;
+use Voyager\Filesystem\Filesystem;
 use Voyager\IOPools\LoopWaiter;
 use Voyager\IOPools\ResourceRegistry;
 use Voyager\NutsAndBolts\ServiceProvider;
@@ -49,6 +54,16 @@ class TerranServiceProvider extends ServiceProvider
         ));
         $this->app->alias('terran.input', InputReader::class);
 
+        $this->app->registerSingleton('terran.assets', fn (FrameworkCore $app) => new AssetCache(
+            $app->make('images')->driver(),
+            $app->make('framebuffers')->driver(),
+            $app->make('fonts'),
+        ));
+        $this->app->alias('terran.assets', AssetCache::class);
+
+        $this->app->registerSingleton('terran.primitives', fn () => ScenePrimitives::terran());
+        $this->app->alias('terran.primitives', ScenePrimitives::class);
+
         $this->app->registerSingleton('terran.world', function (FrameworkCore $app): World {
             $loop = $app->get('event-loop');
             if (! $loop instanceof GameLoop) {
@@ -61,6 +76,7 @@ class TerranServiceProvider extends ServiceProvider
                 new AutoloadRegistry($app),
                 (array) config('terran.autoloads', []),
                 $app->make(InputMap::class),
+                $app->make(AssetCache::class),
             );
         });
         $this->app->alias('terran.world', World::class);
@@ -83,6 +99,13 @@ class TerranServiceProvider extends ServiceProvider
         $this->callAfterResolving('sketches.registry', function (SketchRegistry $registry): void {
             if (! $registry->has(SketchRegistry::nameFor(GameEngine::class))) {
                 $registry->register(GameEngine::class);
+            }
+        });
+
+        // Built when the console starts, after every provider has run, so primitives a package registered are included.
+        Computer::starting(function (Computer $computer): void {
+            foreach (ScenePrimitiveMakeCommand::all(new Filesystem(), $this->app->make(ScenePrimitives::class)) as $command) {
+                $computer->add($command);
             }
         });
     }
